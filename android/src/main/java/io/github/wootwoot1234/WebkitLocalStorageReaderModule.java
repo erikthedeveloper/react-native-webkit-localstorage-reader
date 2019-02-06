@@ -16,6 +16,9 @@ import java.nio.charset.Charset;
 
 public class WebkitLocalStorageReaderModule extends ReactContextBaseJavaModule {
 
+    // Path to storage file (underneath React dataDir)
+    private String storagePath = "/app_webview/Local Storage/file__0.localstorage";
+
     public WebkitLocalStorageReaderModule(ReactApplicationContext reactContext) {
         super(reactContext);
     }
@@ -26,10 +29,16 @@ public class WebkitLocalStorageReaderModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void setStoragePath(String path, Promise promise) {
+      storagePath = path;
+      promise.resolve(null);
+    }
+
+    @ReactMethod
     public void get(Promise promise) {
         WritableMap kv = new WritableNativeMap();
         String dataDir = getReactApplicationContext().getApplicationInfo().dataDir;
-        File localstorage = new File(dataDir + "/app_webview/Local Storage/file__0.localstorage");
+        File localstorage = new File(dataDir + storagePath);
 
         if (!localstorage.exists()) {
             promise.resolve(kv);
